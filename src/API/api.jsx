@@ -27,3 +27,13 @@ export const fetchInvPost = async (id) => {
     return [];
   }
 };
+//  DELETE Post
+
+export const deletePost = async (id) => {
+  try {
+    return api.delete(`/posts/${id}`);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+};

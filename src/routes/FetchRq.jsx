@@ -1,10 +1,30 @@
 import React, { useState } from "react";
-import { fetchPosts } from "../API/api";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { deletePost, fetchPosts } from "../API/api";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { NavLink } from "react-router-dom";
 const FetchRq = ({ heading }) => {
   const[pageNumber,setPageNumber] = useState(0);
-  //  USE QUERY
+
+  
+    //  DELETE MUTATION ;
+    const queryClient=useQueryClient();   // Use to get Cache Data .
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deletePost(id),
+    onSuccess:(data,id)=>{
+      
+        queryClient.setQueryData(["posts",pageNumber],(elm)=>{
+          
+          
+         const res= elm?.filter((postId)=>postId.id !== id )
+         console.log(res);
+         return res
+         
+        })
+    }
+  })
+
+      //  USE QUERY
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["posts",pageNumber],
     queryFn:()=> fetchPosts(pageNumber),
@@ -15,12 +35,8 @@ const FetchRq = ({ heading }) => {
     placeholderData:keepPreviousData,    // loading na dikhao jab tk next data na ayy  tab tk previous data hi dikhao .
   });
   if (isLoading) return <p className="section-accordion">Loading...</p>;
-  if (isError)
-    return (
-      <p className="section-accordion">
-        Error : {error.message} SomeThing went Wrong
-      </p>
-    );
+  if (isError)  return  <p className="section-accordion">  Error : {error.message} SomeThing went Wrong </p>
+
   return (
     <div>
       <h1>{heading || "All Posts"}</h1>
@@ -34,13 +50,18 @@ const FetchRq = ({ heading }) => {
                 <p>{id}</p>
                   <p>{title}</p>
                   <p>{body}</p>
+                
                 </NavLink>
+                {/* DELETE POST */}
+                <button onClick={()=>deleteMutation.mutate(id)}>delete</button>
+                
               </li>
             </>
           );
         })}
       </ul>
       {/* PAGINATION FUNCTIONALITY */}
+
       <div className="pagination-section container">
           <button disabled={pageNumber === 0 ? true : false} onClick={()=>setPageNumber((prev)=>prev-3)}>Prev</button>
           <h2>{pageNumber/3 + 1}</h2>
