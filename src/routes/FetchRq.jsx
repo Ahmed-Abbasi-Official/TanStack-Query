@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { deletePost, fetchPosts } from "../API/api";
+import { deletePost, fetchPosts, updatePost } from "../API/api";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { NavLink } from "react-router-dom";
 const FetchRq = ({ heading }) => {
@@ -7,6 +7,7 @@ const FetchRq = ({ heading }) => {
 
   
     //  DELETE MUTATION ;
+
     const queryClient=useQueryClient();   // Use to get Cache Data .
   const deleteMutation = useMutation({
     mutationFn: (id) => deletePost(id),
@@ -16,6 +17,25 @@ const FetchRq = ({ heading }) => {
           
           
          const res= elm?.filter((postId)=>postId.id !== id )
+         console.log(res);
+         return res
+         
+        })
+    }
+  })
+
+    // UPDATE MUTATION ;
+
+  const updateMutation = useMutation({
+    mutationFn: (id) => updatePost(id),
+    onSuccess:(apiData,id)=>{
+      console.log(apiData.data);
+      
+      
+        queryClient.setQueryData(["posts",pageNumber],(elm)=>{
+          
+          
+         const res= elm?.map((postId)=>postId.id === id ? ({...postId , title:apiData.data.title}):(postId) )
          console.log(res);
          return res
          
@@ -54,6 +74,8 @@ const FetchRq = ({ heading }) => {
                 </NavLink>
                 {/* DELETE POST */}
                 <button onClick={()=>deleteMutation.mutate(id)}>delete</button>
+                {/* UPDATE POST */}
+                <button onClick={()=>updateMutation.mutate(id)}>update</button>
                 
               </li>
             </>
