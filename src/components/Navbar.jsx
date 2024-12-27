@@ -15,6 +15,9 @@ import { NavLink } from "react-router-dom";
           <li>
             <NavLink to="/rq"> FetchRQ </NavLink>
           </li>
+          <li>
+            <NavLink to="/infinite"> Infinite Scroll </NavLink>
+          </li>
         </ul>
       </div>
     </header>

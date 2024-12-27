@@ -10,6 +10,7 @@ import FetchRq from './routes/FetchRq.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import FetchTndv from './routes/FetchTndv.jsx'
+import InfiniteScroll from './components/InfiniteScroll.jsx'
 
 const queryClient=new QueryClient();
 
@@ -20,6 +21,7 @@ const route=createBrowserRouter(
       <Route path='/rad' element={<FetchOld/>}/>
       <Route path='/rq' element={<FetchRq/>}/>
       <Route path='/rq/:id' element={<FetchTndv/>}/>
+      <Route path='/infinite' element={<InfiniteScroll/>}/>
     </Route>
   )
 )

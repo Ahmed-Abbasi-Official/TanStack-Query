@@ -38,9 +38,24 @@ export const deletePost = async (id) => {
     return [];
   }
 };
+
+//  UPDATE POST
+
 export const updatePost = async (id) => {
   try {
     return await api.patch(`/posts/${id}`,{title:"I am updated"});
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+};
+
+// FETCH USERS
+
+export const fetchUsers = async ({pageParam=1}) => {
+  try {
+    const res=await api.get(`https://api.github.com/users?per_page=10&page=${pageParam}`);
+    return res.data;
   } catch (error) {
     console.error('Error fetching posts:', error);
     return [];
